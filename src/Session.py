@@ -1,5 +1,6 @@
 from src import GameConsts
 
+
 class GameSession:
     def __init__(self):
         self.available_cards = []
@@ -21,10 +22,6 @@ class GameSession:
         self.is_black_cured = False
         self.is_black_eradicated = False
         self.cities = []
-
-    def pre_setup_window_updates(self):
-        # Add the city objects to the cities array
-        pass
 
     def post_setup_window_updates(self):
         pass
