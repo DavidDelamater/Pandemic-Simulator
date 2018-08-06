@@ -8,10 +8,13 @@ from PyQt5.QtWidgets import (
     QLabel,
     QFrame,
     QComboBox,
-
+    QSlider,
 )
 from PyQt5.QtGui import (
     QIcon,
+)
+from PyQt5.QtCore import (
+    Qt,
 )
 import sys
 from src import GameConsts
@@ -32,32 +35,69 @@ class SetupWindow(QWidget):
         # Main Layout
         self.main_vbox = QVBoxLayout()
         self.setLayout(self.main_vbox)
+        self.horz_line = QFrame()
+        self.horz_line.setFrameShape(QFrame.HLine)
+        self.horz_line.setFrameShadow(QFrame.Sunken)
         # Difficulty
         self.difficulty_hbox = QHBoxLayout()
-        self.easy_btn = QPushButton("EASY")
-        self.easy_btn.setStyleSheet("background-color: green")
-        self.easy_btn.setDown(True)
-        self.medium_btn = QPushButton("MEDIUM")
-        self.medium_btn.setStyleSheet("background-color: yellow")
-        self.hard_btn = QPushButton("HARD")
-        self.hard_btn.setStyleSheet("background-color: red")
-        self.difficulty_hbox.addWidget(self.easy_btn)
-        self.difficulty_hbox.addWidget(self.medium_btn)
-        self.difficulty_hbox.addWidget(self.hard_btn)
+        self.difficulty_lbl = QLabel("Number of Epidemic Cards")
+        self.difficulty_cbox = QComboBox()
+        self.difficulty_cbox.addItem("1 - Brain Dead")
+        self.difficulty_cbox.addItem("2 - Very Easy")
+        self.difficulty_cbox.addItem("3 - Easier")
+        self.difficulty_cbox.addItem("4 - Easy")
+        self.difficulty_cbox.addItem("5 - Medium")
+        self.difficulty_cbox.addItem("6 - Hard")
+        self.difficulty_cbox.setCurrentIndex(3)
+        self.difficulty_cbox.setFixedWidth(110)
+        self.difficulty_hbox.addWidget(self.difficulty_lbl)
+        self.difficulty_hbox.addWidget(self.difficulty_cbox)
+        self.difficulty_hbox.addStretch()
         self.main_vbox.addLayout(self.difficulty_hbox)
+        self.main_vbox.addWidget(self.horz_line)
         # Player boxes
-        self.player_vbox = QVBoxLayout()
+        self.player_grid = QGridLayout()
         self.player1_role_lbl = QLabel("Player 1 Role")
+        self.player1_role_lbl.setFixedWidth(75)
         self.player1_role_cbox = QComboBox()
+        self.player1_role_cbox.setFixedWidth(140)
         for role in GameConsts.roles:
             self.player1_role_cbox.addItem(role)
+        self.player1_error_lbl = QLabel("")
         self.player2_role_lbl = QLabel("Player 2 Role")
+        self.player2_role_lbl.setFixedWidth(75)
         self.player2_role_cbox = QComboBox()
+        self.player2_role_cbox.setFixedWidth(140)
         for role in GameConsts.roles:
             self.player2_role_cbox.addItem(role)
-
-
-
+        self.player2_error_lbl = QLabel("")
+        self.player3_role_lbl = QLabel("Player 3 Role")
+        self.player3_role_lbl.setFixedWidth(75)
+        self.player3_role_cbox = QComboBox()
+        self.player3_role_cbox.setFixedWidth(140)
+        for role in GameConsts.roles:
+            self.player3_role_cbox.addItem(role)
+        self.player3_error_lbl = QLabel("")
+        self.player4_role_lbl = QLabel("Player 4 Role")
+        self.player4_role_lbl.setFixedWidth(75)
+        self.player4_role_cbox = QComboBox()
+        self.player4_role_cbox.setFixedWidth(140)
+        for role in GameConsts.roles:
+            self.player4_role_cbox.addItem(role)
+        self.player4_error_lbl = QLabel("")
+        self.player_grid.addWidget(self.player1_role_lbl, 0, 0)
+        self.player_grid.addWidget(self.player1_role_cbox, 0, 1)
+        self.player_grid.addWidget(self.player1_error_lbl, 0, 2)
+        self.player_grid.addWidget(self.player2_role_lbl, 1, 0)
+        self.player_grid.addWidget(self.player2_role_cbox, 1, 1)
+        self.player_grid.addWidget(self.player2_error_lbl, 1, 2)
+        self.player_grid.addWidget(self.player3_role_lbl, 2, 0)
+        self.player_grid.addWidget(self.player3_role_cbox, 2, 1)
+        self.player_grid.addWidget(self.player3_error_lbl, 2, 2)
+        self.player_grid.addWidget(self.player4_role_lbl, 3, 0)
+        self.player_grid.addWidget(self.player4_role_cbox, 3, 1)
+        self.player_grid.addWidget(self.player4_error_lbl, 3, 2)
+        self.main_vbox.addLayout(self.player_grid)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

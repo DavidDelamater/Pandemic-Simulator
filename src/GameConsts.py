@@ -226,3 +226,14 @@ city_coords = {
     "SEOUL": (0.8635, 0.2188),
     "BEIJING": (0.8035, 0.2212),
 }
+
+actions = [
+    "Drive",
+    "Direct Flight",
+    "Charter Flight",
+    "Shuttle Flight",
+    "Build Research Station",
+    "Treat Disease",
+    "Share Knowledge",
+    "Discover Cure",
+]
