@@ -45,7 +45,7 @@ class Player:
 
     def treat_disease(self, color):
         # Check to see if the current city has cubes of that color
-        if self.city.get_num_cubes(color) > 0:
+        if self.city.get_cube_count(color) > 0:
             self.city.remove_cube(color)
             self.decrement_move_count()
 

@@ -73,16 +73,16 @@ class GameSession:
         # Add each cube
         for i in range(0, cubes):
             # Check for an outbreak
-            if city.get_num_cubes(color) == 3:
+            if city.get_cube_count(color) == 3:
                 self.outbreak(city)
                 break
             city.add_cube(color)
 
     def epidemic_city(self, city):
         # Check for outbreak
-        if city.get_num_cubes(city.color) == 3:
+        if city.get_cube_count(city.color) == 3:
             self.outbreak(city)
-        cubes = 3 - city.get_num_cubes(city.color)
+        cubes = 3 - city.get_cube_count(city.color)
         # TODO
 
     def cure_disease(self, color):
