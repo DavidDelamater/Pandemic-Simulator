@@ -1,7 +1,6 @@
-from src import (
-    GameConsts,
-    Session
-)
+from src import GameConsts
+from src.City import City
+from src.GameSession import GameSession
 
 
 class Player:
@@ -12,53 +11,53 @@ class Player:
         self.remaining_moves = 4
         self.session = session
 
-    def drive(self, city):
+    def drive(self, destination: City):
         # Check to see if the city is connected to the current city
-        if city.name in self.city.connected_cities:
-            self.city = city
+        if destination.name in self.city.connected_cities:
+            self.city = destination
             self.decrement_move_count()
 
-    def direct_flight(self, city):
+    def direct_flight(self, destination: City):
         # Check to see if the player has that card
-        if city.name in self.cards:
-            self.city = city
-            self.cards.remove(city.name)
+        if destination.name in self.cards:
+            self.city = destination
+            self.cards.remove(destination.name)
             self.decrement_move_count()
 
-    def charter_flight(self, city):
+    def charter_flight(self, destination: City):
         # Check to see if the player has their current city's card
         if self.city.name in self.cards:
-            self.city = city
+            self.city = destination
             self.decrement_move_count()
 
-    def shuttle_flight(self, city):
+    def shuttle_flight(self, destination: City):
         # Check to see if the current city and the desired city have research stations
-        if self.city.has_station and city.has_station:
-            self.city = city
+        if self.city.has_station and destination.has_station:
+            self.city = destination
             self.decrement_move_count()
 
-    def build_research_station(self, city):
+    def build_research_station(self, current_city: City):
         # Check to see if the current city already has a research station
-        if not city.has_station:
+        if not current_city.has_station:
             self.city.has_station = True
             self.decrement_move_count()
 
-    def treat_disease(self, color):
+    def treat_disease(self, color: str):
         # Check to see if the current city has cubes of that color
         if self.city.get_cube_count(color) > 0:
             self.city.remove_cube(color)
             self.decrement_move_count()
 
-    def share_knowledge(self, card, receiving_player):
+    def share_knowledge(self, card: str, other_player: 'Player'):  # There are reference errors with the Player class
         # Check to make sure the player has that card
         if card in self.cards:
             # Check to make sure the receiving player has room
-            if len(receiving_player.cards) < 8:
-                receiving_player.cards.append(card)
+            if len(other_player.cards) < 8:
+                other_player.cards.append(card)
                 self.cards.remove(card)
                 self.decrement_move_count()
 
-    def discover_cure(self, color):
+    def discover_cure(self, color: str):
         # Check to see if the player is at a research station
         if self.city.has_station:
             # Check to make sure the player has 5 of the color's cards
@@ -79,5 +78,21 @@ class Player:
 
     def decrement_move_count(self):
         self.remaining_moves = self.remaining_moves - 1
+
+    def set_city(self, desired_city: City):
+        self.city = desired_city
+
+    def set_remaining_moves(self, desired_moves: int):
+        if 0 < desired_moves <= 4:
+            self.remaining_moves = desired_moves
+        else:
+            raise ValueError("A player's remaining move count cannot be set higher than 4 or lower than 0")
+
+    def add_card(self, card: str):
+        if len(self.cards) < 7:
+            self.cards.append(card)
+        else:
+            raise IndexError("A player can only have 7 cards in their hand.")
+
 
 
