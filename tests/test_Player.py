@@ -5,42 +5,64 @@ from src.GameSession import GameSession
 
 
 class TestPlayer(unittest.TestCase):
+    def setUp(self):
+        self.game = GameSession()
+        self.starting_city = City("ATLANTA")
+        self.destination_city = City("PARIS")
+        self.extra_city = City("DELHI")
+        self.test_player = Player(game, starting_city)
+
+    def tearDown(self):
+        self.game = None
+        self.starting_city = None
+        self.destination_city = None
+        self.extra_city = None
+        self.test_player = None
+
+    # Test to see if the player's city is changed
     def test_set_city(self):
-        game = GameSession()
-        starting_city = City("ATLANTA")
-        test_player = Player(game, starting_city)
-        # Test to see if the player's city is changed
-        other_city = City("DELHI")
-        test_player.set_city(other_city)
-        self.assertEqual(test_player.city, other_city)
+        self.test_player.set_city(self.other_city)
+        self.assertEqual(self.test_player.city, self.other_city)
 
+    # Test to see if the remaining moves are properly set
     def test_set_remaining_moves(self):
-        game = GameSession()
-        starting_city = City("ATLANTA")
-        test_player = Player(game, starting_city)
-        # Test to see if the moves are properly set
         test_player.set_remaining_moves(2)
-        self.assertEqual(test_player.remaining_moves, 2)
-        # Test to see if a number too large and too small raise ValueErrors
-        self.assertRaises(ValueError, test_player.set_remaining_moves, 5)
-        self.assertRaises(ValueError, test_player.set_remaining_moves, -1)
+        self.assertEqual(self.test_player.remaining_moves, 2)
 
+    # Test to see if a number too large and too small raise ValueErrors
+    def test_set_remaining_moves_value_out_of_bounds(self):
+        self.assertRaises(ValueError, self.test_player.set_remaining_moves, 5)
+        self.assertRaises(ValueError, self.test_player.set_remaining_moves, -1)
+
+    # Test to see if a remaining move is successfully decremented
     def test_decrement_move_count(self):
-        game = GameSession()
-        starting_city = City("ATLANTA")
-        test_player = Player(game, starting_city)
-        # Test to see if a move is successfully decremented
-        test_player.set_remaining_moves(4)
-        test_player.decrement_move_count()
-        self.assertEqual(test_player.remaining_moves, 3)
+        self.test_player.set_remaining_moves(4)
+        self.test_player.decrement_move_count()
+        self.assertEqual(self.test_player.remaining_moves, 3)
 
     def test_add_card(self):
         game = GameSession()
         starting_city = City("ATLANTA")
         test_player = Player(game, starting_city)
-        # Test to see if the car dia added to the player's hand
+        # Test to see if the card is added to the player's hand
         test_player.add_card("DELHI")
         self.assertIn("DELHI", test_player.cards)
+        # Test to see if the card cannot be added to player if they have 7 cards
+        test_player.cards = ["1", "2", "3", "4", "5", "6", "7"]
+        self.assertRaises(IndexError, test_player.add_card, "DELHI")
+
+    def test_remove_card(self):
+        game = GameSession()
+        starting_city = City("ATLANTA")
+        test_player = Player(game, starting_city)
+        # Test to see if the card is removed from the player's hand
+        test_player.add_card("DELHI")
+        test_player.add_card("PARIS")
+        test_player.remove_card("DELHI")
+        self.assertEqual(test_player.cards, ["PARIS"])
+        # Test to see if the card isn't removed if the player doesnt have that card
+        test_player.cards = []
+        self.assertRaises(ValueError, test_player.remove_card, "DELHI")
 
     def test_drive(self):
         game = GameSession()
@@ -64,21 +86,53 @@ class TestPlayer(unittest.TestCase):
         game = GameSession()
         starting_city = City("ATLANTA")
         test_player = Player(game, starting_city)
-        # Test to see if the player moves to the city card
         other_city = City("DELHI")
-        test_player.
+        # Test to see if the player moves to the city card
+        test_player.set_remaining_moves(4)
+        test_player.add_card("DELHI")
+        test_player.direct_flight(other_city)
+        self.assertEqual(test_player.city, other_city)
+        self.assertEqual(test_player.remaining_moves, 3)
+        self.assertNotIn(other_city.name, test_player.cards)
         # Test to see if the player is prevented if they don't have that card
-        pass  # TODO
+        test_player.cards = []
+        test_player.set_remaining_moves(4)
+        test_player.set_city(starting_city)
+        test_player.direct_flight(other_city)
+        self.assertEqual(test_player.city, starting_city)
+        self.assertEqual(test_player.remaining_moves, 4)
 
     def test_charter_flight(self):
+        game = GameSession()
+        starting_city = City("ATLANTA")
+        test_player = Player(game, starting_city)
+        other_city = City("DELHI")
         # Test to see if the player moves to the city they want
-        pass  # TODO
+        test_player.set_remaining_moves(4)
+        test_player.set_city(starting_city)
+        test_player.add_card(starting_city.name)
+        test_player.charter_flight(other_city)
+        self.assertEqual(test_player.city, other_city)
+        self.assertEqual(test_player.remaining_moves, 3)
+        self.assertNotIn(starting_city.name, test_player.cards)
         # Test to see if the player is prevented if they don't have their city's card
-        pass  # TODO
+        test_player.cards = []
+        test_player.set_city(starting_city)
+        test_player.set_remaining_moves(4)
+        test_player.charter_flight(other_city)
+        self.assertEqual(test_player.city, starting_city)
+        self.assertEqual(test_player.remaining_moves, 4)
 
     def test_shuttle_flight(self):
+        game = GameSession()
+        starting_city = City("ATLANTA")
+        test_player = Player(game, starting_city)
+        other_city = City("DELHI")
         # Test to see if the player moves to the city they want
-        pass  # TODO
+        starting_city.has_station = True
+        other_city.has_station = True
+        test_player.set_remaining_moves(4)
+
         # Test to see if the player is prevented if their city doesn't have a station
         pass  # TODO
         # Test to see if the player is prevented if their destination doesn't have a station

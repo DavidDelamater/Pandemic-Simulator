@@ -20,13 +20,14 @@ class Player:
     def direct_flight(self, destination: City):
         # Check to see if the player has that card
         if destination.name in self.cards:
+            self.remove_card(destination.name)
             self.city = destination
-            self.cards.remove(destination.name)
             self.decrement_move_count()
 
     def charter_flight(self, destination: City):
         # Check to see if the player has their current city's card
         if self.city.name in self.cards:
+            self.remove_card(self.city.name)
             self.city = destination
             self.decrement_move_count()
 
@@ -77,6 +78,8 @@ class Player:
                         self.cards.remove(card)
 
     def decrement_move_count(self):
+        if self.remaining_moves <= 0:
+            raise OverflowError
         self.remaining_moves = self.remaining_moves - 1
 
     def set_city(self, desired_city: City):
@@ -93,6 +96,13 @@ class Player:
             self.cards.append(card)
         else:
             raise IndexError("A player can only have 7 cards in their hand.")
+
+    def remove_card(self, card: str):
+        # If the player doesn't have that card then raise a value error
+        if card not in self.cards:
+            raise ValueError("Cannot remove a card that the player doesn't have.")
+        self.cards.remove(card)
+
 
 
 
