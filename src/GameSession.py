@@ -1,9 +1,6 @@
-from src import (
-    GameConsts,
-    GameUtils,
-    City,
-    Player,
-)
+from src import GameConsts, GameUtils
+from src.City import City
+from src.Player import Player
 
 
 class GameSession:
@@ -30,12 +27,12 @@ class GameSession:
         self.is_black_eradicated = False
         self.cities = dict()
         for city_name in GameConsts.city_names:
-            self.cities[city_name] = City.City(city_name)
+            self.cities[city_name] = City(city_name)
         self.players = [
-            Player.Player(self, self.cities["ATLANTA"]),
-            Player.Player(self, self.cities["ATLANTA"]),
-            Player.Player(self, self.cities["ATLANTA"]),
-            Player.Player(self, self.cities["ATLANTA"]),
+            Player(self.cities["ATLANTA"]),
+            Player(self.cities["ATLANTA"]),
+            Player(self.cities["ATLANTA"]),
+            Player(self.cities["ATLANTA"]),
         ]
         self.current_player = 0
 
@@ -57,6 +54,10 @@ class GameSession:
             infect_card = self.draw_infection_card()
             self.infect_city(city=self.cities[infect_card], cubes=1)
         # Shuffle the deck without any epidemic cards
+        # TODO
+
+    def begin(self):
+        pass
 
     def get_infection_rate_draw_amount(self):
         if self.infection_rate < 2:
@@ -76,7 +77,7 @@ class GameSession:
             if city.get_cube_count(color) == 3:
                 self.outbreak(city)
                 break
-            city.add_cube(color)
+            city.add_one_cube(color)
 
     def epidemic_city(self, city):
         # Check for outbreak

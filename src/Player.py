@@ -1,15 +1,13 @@
 from src import GameConsts
 from src.City import City
-from src.GameSession import GameSession
-
 
 class Player:
-    def __init__(self, session, starting_city):
+    def __init__(self, starting_city):
         self.city = starting_city
         self.role = GameConsts.roles[5]
         self.cards = []
         self.remaining_moves = 4
-        self.session = session
+        self.cured_disease = None
 
     def drive(self, destination: City):
         # Check to see if the city is connected to the current city
@@ -68,7 +66,7 @@ class Player:
                     num_of_colors_cards += 1
             if num_of_colors_cards >= 5:
                 # Cure the disease
-                self.session.cure_disease(color)
+                self.cured_disease = color
                 # Remove the cards
                 cards_removed = 0
                 for card in self.cards:
@@ -79,7 +77,7 @@ class Player:
 
     def decrement_move_count(self):
         if self.remaining_moves <= 0:
-            raise OverflowError
+            raise ValueError("Unable to decrement, Player is out of moves.")
         self.remaining_moves = self.remaining_moves - 1
 
     def set_city(self, desired_city: City):
